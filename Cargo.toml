@@ -1,9 +1,53 @@
 [package]
-name = "geometry_dash"
+name = "cube_dash"
 version = "0.1.0"
 edition = "2024"
+description = "Un clone open source de jeu de plateforme rythmique, écrit en Rust avec Bevy."
+license = "MIT"
+publish = false
+
+# La crate est découpée en bibliothèque + binaire.
+# Avantage : les tests d'intégration (dossier `tests/`) peuvent importer le jeu.
+[lib]
+name = "cube_dash"
+path = "src/lib.rs"
+
+[[bin]]
+name = "cube_dash"
+path = "src/main.rs"
 
 [dependencies]
-bevy = "0.20.0"
-bevy_kira_audio = "0.27.1"
-rand = "0.10.3"
+bevy = "0.19"
+
+[features]
+# Compilation incrémentale plus rapide en développement (liaison dynamique de Bevy).
+# Usage : `cargo run --features dev`. Ne jamais l'activer pour une release.
+dev = ["bevy/dynamic_linking"]
+
+# --- Profils de compilation ---------------------------------------------------
+
+[profile.dev]
+# Un peu d'optimisation pour que le jeu reste fluide même en debug.
+opt-level = 1
+
+[profile.dev.package."*"]
+# Les dépendances (Bevy, etc.) sont compilées une seule fois, avec optimisation maximale.
+opt-level = 3
+
+[profile.release]
+# Optimisations de lien : binaire plus rapide et plus petit, compilation plus lente.
+lto = "thin"
+codegen-units = 1
+strip = true
+
+# --- Lints ---------------------------------------------------------------------
+
+[lints.rust]
+# Impose une documentation sur chaque élément public.
+missing_docs = "warn"
+
+[lints.clippy]
+# Les requêtes ECS de Bevy ont naturellement des types complexes
+# et les systèmes ont souvent beaucoup de paramètres : ces lints sont du bruit.
+type_complexity = "allow"
+too_many_arguments = "allow"
