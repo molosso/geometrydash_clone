@@ -1,0 +1,9 @@
+[package]
+name = "geometry_dash"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+bevy = "0.20.0"
+bevy_kira_audio = "0.27.1"
+rand = "0.10.3"
