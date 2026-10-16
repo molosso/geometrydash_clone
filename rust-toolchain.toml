@@ -1,0 +1,4 @@
+[toolchain]
+# Bevy exige la dernière version stable de Rust.
+channel = "stable"
+components = ["rustfmt", "clippy"]
