@@ -4,7 +4,11 @@ use bevy::prelude::*;
 
 use crate::camera::CameraPlugin;
 use crate::game::GameStatePlugin;
+use crate::gameplay::GameplayPlugin;
+use crate::levels::LevelsPlugin;
 use crate::menu::MenuPlugin;
+use crate::player::PlayerPlugin;
+use crate::ui::UiPlugin;
 use crate::utils::constants::{BACKGROUND_RGB, WINDOW_TITLE};
 
 /// Plugin racine regroupant tous les plugins propres au jeu.
@@ -15,7 +19,15 @@ pub struct CubeDashPlugin;
 
 impl Plugin for CubeDashPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins((GameStatePlugin, CameraPlugin, MenuPlugin));
+        app.add_plugins((
+            GameStatePlugin,
+            LevelsPlugin,
+            CameraPlugin,
+            PlayerPlugin,
+            GameplayPlugin,
+            UiPlugin,
+            MenuPlugin,
+        ));
     }
 }
 

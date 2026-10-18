@@ -18,6 +18,9 @@ path = "src/main.rs"
 
 [dependencies]
 bevy = "0.19"
+# Format des niveaux (fichiers .ron).
+serde = { version = "1", features = ["derive"] }
+ron = "0.12"
 
 [features]
 # Compilation incrémentale plus rapide en développement (liaison dynamique de Bevy).

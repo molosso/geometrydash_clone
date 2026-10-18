@@ -32,12 +32,36 @@ pub enum AppState {
     Defeat,
 }
 
+/// Ordre d'exécution des systèmes de jeu, image par image.
+///
+/// 1. [`GameplaySet::Input`] : lecture du clavier/souris ;
+/// 2. [`GameplaySet::Simulate`] : physique, mort, checkpoints, victoire ;
+/// 3. [`GameplaySet::Present`] : affichage (cube, caméra, interface).
+///
+/// Les trois ensembles ne tournent que dans l'état [`AppState::Playing`] :
+/// mettre le jeu en pause suffit donc à tout geler.
+#[derive(SystemSet, Debug, Clone, PartialEq, Eq, Hash)]
+pub enum GameplaySet {
+    /// Lecture des entrées.
+    Input,
+    /// Simulation du monde.
+    Simulate,
+    /// Mise à jour de l'affichage.
+    Present,
+}
+
 /// Plugin enregistrant la machine à états et la séquence de démarrage.
 pub struct GameStatePlugin;
 
 impl Plugin for GameStatePlugin {
     fn build(&self, app: &mut App) {
-        app.init_state::<AppState>()
+        app.configure_sets(
+            Update,
+            (GameplaySet::Input, GameplaySet::Simulate, GameplaySet::Present)
+                .chain()
+                .run_if(in_state(AppState::Playing)),
+        )
+        .init_state::<AppState>()
             // Tant que l'on est dans `Boot`, on tente de passer au menu.
             .add_systems(Update, finish_boot.run_if(in_state(AppState::Boot)))
             .add_systems(OnEnter(AppState::MainMenu), log_main_menu_entered);
